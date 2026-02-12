@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./styles/popup.css" />
+  </head>
+  <body>
+    <div class="header">
+      <span class="header-dot"></span>
+      <span class="header-title">⚡ Flow Viewer</span>
+    </div>
+
+    <div class="body">
+      <!-- toggles -->
+      <div class="toggles">
+        <label class="toggle-row">
+          <span>Request Headers</span>
+          <input type="checkbox" id="includeReqHeaders" checked />
+          <span class="switch"></span>
+        </label>
+        <label class="toggle-row">
+          <span>Response Headers</span>
+          <input type="checkbox" id="includeResHeaders" checked />
+          <span class="switch"></span>
+        </label>
+        <label class="toggle-row">
+          <span>Capture API Screenshot</span>
+          <input type="checkbox" id="captureApiScreenshots" />
+          <span class="switch"></span>
+        </label>
+      </div>
+
+      <!-- status -->
+      <div class="status-bar">
+        <span class="status-indicator" id="statusDot"></span>
+        <span id="statusText">Idle</span>
+      </div>
+
+      <!-- action buttons -->
+      <button class="btn btn-start" id="apiToggle">Start API Recording</button>
+      <button class="btn btn-start" id="feToggle">Start FE Recording</button>
+      <button class="btn btn-start" id="bothToggle">
+        Start Both Recordings
+      </button>
+
+      <button class="btn btn-viewer" id="openViewer">
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+        >
+          <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
+          <polyline points="15 3 21 3 21 9" />
+          <line x1="10" y1="14" x2="21" y2="3" />
+        </svg>
+        Open Flow Viewer
+      </button>
+    </div>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

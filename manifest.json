@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Flow Recorder",
+  "version": "1.0",
+  "description": "Records API requests, responses and screenshots",
+  "permissions": ["debugger", "tabs", "storage", "downloads", "activeTab"],
+  "host_permissions": ["<all_urls>"],
+
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  }
+}

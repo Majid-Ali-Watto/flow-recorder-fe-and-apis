@@ -1,0 +1,407 @@
+/* ── Tokens ── */
+:root {
+  --bg: #0f1117;
+  --surface: #181c27;
+  --surface2: #1e2436;
+  --border: #2a3050;
+  --accent: #4f8eff;
+  --accent2: #7c5cfc;
+  --text: #e2e8f0;
+  --text-muted: #7a8499;
+  --radius: 8px;
+  --mono: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+
+  /* method colours */
+  --get: #22d3a0;
+  --post: #4f8eff;
+  --put: #f59e0b;
+  --patch: #a78bfa;
+  --delete: #f87171;
+  --head: #94a3b8;
+  --options: #64748b;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Segoe UI", "SF Pro Display", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── Top toolbar ── */
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.toolbar-title {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  white-space: nowrap;
+  margin-right: 4px;
+}
+
+/* search box */
+.search-wrap {
+  position: relative;
+  flex: 1 1 220px;
+}
+.search-wrap svg {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.45;
+  pointer-events: none;
+}
+#searchUrl {
+  width: 100%;
+  padding: 7px 10px 7px 32px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+#searchUrl::placeholder {
+  color: var(--text-muted);
+}
+#searchUrl:focus {
+  border-color: var(--accent);
+}
+
+/* dropdowns */
+select {
+  padding: 7px 28px 7px 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 0.85rem;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a8499' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  cursor: pointer;
+  min-width: 130px;
+  transition: border-color 0.2s;
+}
+select:focus {
+  border-color: var(--accent);
+}
+
+/* clear button */
+#clearFilters {
+  padding: 7px 14px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    color 0.2s;
+  white-space: nowrap;
+}
+#clearFilters:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+/* result count */
+#resultCount {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  margin-left: auto;
+}
+
+/* file upload */
+.upload-label {
+  padding: 7px 14px;
+  background: var(--accent2);
+  border-radius: var(--radius);
+  font-size: 0.82rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+.upload-label:hover {
+  opacity: 0.85;
+}
+#fileInput {
+  display: none;
+}
+
+/* ── Main content ── */
+#flowContainer {
+  max-width: 960px;
+  margin: 24px auto;
+  padding: 0 20px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 64px 20px;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+/* ── Entry card ── */
+.entry {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  transition: border-color 0.2s;
+}
+.entry:hover {
+  border-color: #3a4570;
+}
+
+.entry-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.step-num {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-family: var(--mono);
+  min-width: 30px;
+}
+
+.method-badge {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+.method-get {
+  background: rgba(34, 211, 160, 0.15);
+  color: var(--get);
+}
+.method-post {
+  background: rgba(79, 142, 255, 0.15);
+  color: var(--post);
+}
+.method-put {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--put);
+}
+.method-patch {
+  background: rgba(167, 139, 250, 0.15);
+  color: var(--patch);
+}
+.method-delete {
+  background: rgba(248, 113, 113, 0.15);
+  color: var(--delete);
+}
+.method-head {
+  background: rgba(148, 163, 184, 0.12);
+  color: var(--head);
+}
+.method-options {
+  background: rgba(100, 116, 139, 0.12);
+  color: var(--options);
+}
+
+.status-badge {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.status-2xx {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+}
+.status-3xx {
+  background: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
+}
+.status-4xx {
+  background: rgba(248, 113, 113, 0.15);
+  color: #f87171;
+}
+.status-5xx {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+.status-unknown {
+  background: rgba(148, 163, 184, 0.12);
+  color: #94a3b8;
+}
+
+.entry-time {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-family: var(--mono);
+}
+.duration {
+  font-size: 0.75rem;
+  color: #a78bfa;
+  font-family: var(--mono);
+  margin-left: auto;
+}
+
+.page-url {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 5px;
+}
+.page-url a {
+  color: var(--text-muted);
+}
+
+.req-url {
+  font-size: 0.82rem;
+  word-break: break-all;
+  margin-bottom: 12px;
+}
+.req-url a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.req-url a:hover {
+  text-decoration: underline;
+}
+
+mark {
+  background: rgba(251, 191, 36, 0.35);
+  color: #fde68a;
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+/* ── Details / summary ── */
+.details-block {
+  margin-top: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.details-block summary {
+  padding: 7px 12px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  user-select: none;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface2);
+  transition: background 0.15s;
+}
+.details-block summary::-webkit-details-marker {
+  display: none;
+}
+.details-block summary::before {
+  content: "▶";
+  font-size: 0.65rem;
+  transition: transform 0.2s;
+}
+.details-block[open] summary::before {
+  transform: rotate(90deg);
+}
+.details-block summary:hover {
+  background: #252d42;
+  color: var(--text);
+}
+
+/* ── Scrollable JSON panel ── */
+.json-wrapper {
+  position: relative;
+  background: #0d1120;
+}
+
+.json-pre {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: #c8d3f5;
+  padding: 14px 44px 14px 14px; /* right pad for copy btn */
+  max-height: 320px; /* fixed height */
+  overflow-y: auto; /* vertical scroll */
+  overflow-x: auto; /* horizontal scroll */
+  white-space: pre;
+  /* custom scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: #2a3050 transparent;
+}
+.json-pre::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.json-pre::-webkit-scrollbar-track {
+  background: transparent;
+}
+.json-pre::-webkit-scrollbar-thumb {
+  background: #2a3050;
+  border-radius: 3px;
+}
+.json-pre::-webkit-scrollbar-thumb:hover {
+  background: #3a4570;
+}
+
+/* copy button — always visible, pinned top-right */
+.copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 3px 8px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  background: #1e2436;
+  border: 1px solid #2a3050;
+  border-radius: 4px;
+  color: var(--text-muted);
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border-color 0.15s;
+  z-index: 2;
+}
+.copy-btn:hover {
+  background: #252d42;
+  color: var(--text);
+  border-color: var(--accent);
+}
+.copy-btn.copied {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border-color: #4ade80;
+}
