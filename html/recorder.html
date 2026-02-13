@@ -3,27 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <title>Flow Screen Recorder</title>
-    <style>
-      body {
-        font-family: Arial;
-        background: #111;
-        color: white;
-        text-align: center;
-        padding: 40px;
-      }
-      button {
-        padding: 10px 20px;
-        font-size: 16px;
-        margin: 10px;
-      }
-    </style>
+    <link rel="stylesheet" href="../styles/viewer.css" />
+    <link rel="stylesheet" href="../styles/popup.css" />
   </head>
   <body>
-    <h2>🎥 Screen Recording</h2>
+    <div id="flowContainer">
+      <h2 class="toolbar-title">🎥 Screen Recording</h2>
 
-    <button id="start">Start Recording</button>
-    <button id="stop" disabled>Stop Recording</button>
-
+      <button class="btn btn-start" id="start">Start Recording</button>
+      <button class="btn btn-start" id="stop" disabled>Stop Recording</button>
+    </div>
     <script type="module" src="../js/recorder.js"></script>
   </body>
 </html>
