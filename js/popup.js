@@ -1,3 +1,10 @@
+import {
+  exportAndDownload,
+  saveSettings,
+  setButtonState,
+  updateStatusIndicator,
+} from "./utils.js";
+
 const includeReqHeaders = document.getElementById("includeReqHeaders");
 const includeResHeaders = document.getElementById("includeResHeaders");
 const captureApiScreenshots = document.getElementById("captureApiScreenshots");
@@ -17,90 +24,18 @@ includeReqHeaders.addEventListener("change", saveSettings);
 includeResHeaders.addEventListener("change", saveSettings);
 captureApiScreenshots.addEventListener("change", saveSettings);
 
-function saveSettings() {
-  chrome.storage.local.set({
-    includeReqHeaders: includeReqHeaders.checked,
-    includeResHeaders: includeResHeaders.checked,
-    captureApiScreenshots: captureApiScreenshots.checked,
-  });
-}
+saveSettings(
+  includeReqHeaders.checked,
+  includeResHeaders.checked,
+  captureApiScreenshots.checked,
+);
 
 const apiToggle = document.getElementById("apiToggle");
 const feToggle = document.getElementById("feToggle");
 const bothToggle = document.getElementById("bothToggle");
 
-let apiRecording = false;
-let feRecording = false;
-
-function updateStatusIndicator() {
-  const dot = document.getElementById("statusDot");
-  const txt = document.getElementById("statusText");
-  if (apiRecording || feRecording) {
-    dot.classList.add("recording");
-    txt.textContent =
-      apiRecording && feRecording
-        ? "API + FE Recording…"
-        : apiRecording
-          ? "API Recording…"
-          : "FE Recording…";
-  } else {
-    dot.classList.remove("recording");
-    txt.textContent = "Idle";
-  }
-}
-
-function setButtonState(btn, recording, startLabel, stopLabel) {
-  btn.textContent = recording ? stopLabel : startLabel;
-  btn.classList.toggle("btn-stop", recording);
-  btn.classList.toggle("btn-start", !recording);
-}
-
-async function exportAndDownload(filename, actionGet) {
-  return new Promise((resolve) => {
-    chrome.runtime.sendMessage({ action: actionGet }, (response) => {
-      const flow = response.flow || [];
-      if (!flow.length) return resolve();
-
-      const blob = new Blob([JSON.stringify(flow, null, 2)], {
-        type: "application/json",
-      });
-
-      const url = URL.createObjectURL(blob);
-
-      chrome.downloads.download({ url, filename }, () => resolve());
-    });
-  });
-}
-
-apiToggle.addEventListener("click", async () => {
-  if (apiRecording) {
-    chrome.runtime.sendMessage({ action: "STOP_API" }, async () => {
-      apiRecording = false;
-      setButtonState(
-        apiToggle,
-        apiRecording,
-        "Start API Recording",
-        "Stop API Recording",
-      );
-      updateStatusIndicator();
-      await exportAndDownload(
-        "api-flow-record" + new Date().toISOString().slice(0, 10) + ".json",
-        "GET_API_FLOW",
-      );
-    });
-  } else {
-    chrome.runtime.sendMessage({ action: "START_API" }, () => {
-      apiRecording = true;
-      setButtonState(
-        apiToggle,
-        apiRecording,
-        "Start API Recording",
-        "Stop API Recording",
-      );
-      updateStatusIndicator();
-    });
-  }
-});
+export let apiRecording = false;
+export let feRecording = false;
 
 document.getElementById("openViewer").addEventListener("click", async () => {
   // Get both flows from background
@@ -121,7 +56,7 @@ document.getElementById("openViewer").addEventListener("click", async () => {
 
       // Open viewer.html from extension
       const viewerWindow = window.open(
-        chrome.runtime.getURL("viewer.html"),
+        chrome.runtime.getURL("../html/viewer.html"),
         "_blank",
         "width=1200,height=800",
       );
@@ -145,6 +80,36 @@ document.getElementById("openViewer").addEventListener("click", async () => {
   });
 });
 
+apiToggle.addEventListener("click", async () => {
+  if (apiRecording) {
+    chrome.runtime.sendMessage({ action: "STOP_API" }, async () => {
+      apiRecording = false;
+      setButtonState(
+        apiToggle,
+        apiRecording,
+        "Start API Recording",
+        "Stop API Recording",
+      );
+      updateStatusIndicator(apiRecording, feRecording);
+      await exportAndDownload(
+        "api-flow-record" + new Date().toISOString().slice(0, 10) + ".json",
+        "GET_API_FLOW",
+      );
+    });
+  } else {
+    chrome.runtime.sendMessage({ action: "START_API" }, () => {
+      apiRecording = true;
+      setButtonState(
+        apiToggle,
+        apiRecording,
+        "Start API Recording",
+        "Stop API Recording",
+      );
+      updateStatusIndicator(apiRecording, feRecording);
+    });
+  }
+});
+
 feToggle.addEventListener("click", async () => {
   if (feRecording) {
     chrome.runtime.sendMessage({ action: "STOP_FE" }, async () => {
@@ -155,7 +120,7 @@ feToggle.addEventListener("click", async () => {
         "Start FE Recording",
         "Stop FE Recording",
       );
-      updateStatusIndicator();
+      updateStatusIndicator(apiRecording, feRecording);
       await exportAndDownload(
         "fe-flow-record" + new Date().toISOString().slice(0, 10) + ".json",
         "GET_FE_FLOW",
@@ -170,7 +135,7 @@ feToggle.addEventListener("click", async () => {
         "Start FE Recording",
         "Stop FE Recording",
       );
-      updateStatusIndicator();
+      updateStatusIndicator(apiRecording, feRecording);
     });
   }
 });
@@ -201,7 +166,7 @@ bothToggle.addEventListener("click", async () => {
         "Start Both Recordings",
         "Stop Both Recordings",
       );
-      updateStatusIndicator();
+      updateStatusIndicator(apiRecording, feRecording);
       // export combined flow
 
       await Promise.all([
@@ -239,7 +204,7 @@ bothToggle.addEventListener("click", async () => {
         "Start Both Recordings",
         "Stop Both Recordings",
       );
-      updateStatusIndicator();
+      updateStatusIndicator(apiRecording, feRecording);
     });
   }
 });
@@ -272,6 +237,6 @@ document.addEventListener("DOMContentLoaded", () => {
       "Stop Both Recordings",
     );
 
-    updateStatusIndicator();
+    updateStatusIndicator(apiRecording, feRecording);
   });
 });
