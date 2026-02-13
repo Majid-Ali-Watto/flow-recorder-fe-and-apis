@@ -1,6 +1,6 @@
 # ⚡ Flow Recorder
 
-A Chrome extension that records API network traffic and frontend user interactions — with optional screenshots — and lets you view, filter, and export the results.
+A Chrome extension that records API network traffic and frontend user interactions — with optional screenshots, and video — and lets you view, filter, and export the results.
 
 ---
 
@@ -8,6 +8,7 @@ A Chrome extension that records API network traffic and frontend user interactio
 
 - **API Recording** — Captures network requests and responses (URL, method, headers, body, status, duration) using the Chrome Debugger API
 - **FE Recording** — Tracks user interactions (clicks, route changes) with screenshots at each step
+- **Video Recording** — Records a synchronized screen capture (video + audio) alongside API/FE events for replay
 - **Both Modes** — Run API and FE recording simultaneously
 - **Flow Viewer** — Built-in viewer with search, filtering by method/status, and JSON inspection panels
 - **Export** — Downloads recorded flows as `.json` files
@@ -26,9 +27,11 @@ A Chrome extension that records API network traffic and frontend user interactio
 │   ├── popup.js              # Popup UI logic: start/stop controls
 │   ├── viewer.js             # Flow Viewer page logic
 │   └── utils.js              # Shared utilities (filtering, rendering, export)
+|   └── recorder.js           # Screen/video recorder
 ├── html/
 │   ├── popup.html            # Extension popup
 │   └── viewer.html           # Full-page flow viewer
+|   └── recorder.html         # Screen/video recorder UI
 └── styles/
     ├── popup.css
     └── viewer.css
@@ -55,9 +58,10 @@ A Chrome extension that records API network traffic and frontend user interactio
 3. Choose a recording mode:
    - **Start API Recording** — captures network requests only
    - **Start FE Recording** — captures clicks, route changes, and screenshots
+   - **Start Video Recording** — captures screen video/audio only
    - **Start Both Recordings** — runs both simultaneously
 4. Interact with the page
-5. Click the active button again to **stop** — the flow is automatically downloaded as a `.json` file
+5. Click the active button again to **stop** — the flow is automatically downloaded as a `.json` file and video as `.webm`
 
 ### Viewing
 
@@ -66,12 +70,12 @@ A Chrome extension that records API network traffic and frontend user interactio
 
 ### Filters (Viewer)
 
-| Control | Description |
-|---|---|
-| Search by URL | Filter API entries by URL substring |
+| Control         | Description                             |
+| --------------- | --------------------------------------- |
+| Search by URL   | Filter API entries by URL substring     |
 | Method dropdown | Filter by HTTP method (GET, POST, etc.) |
-| Status dropdown | Filter by HTTP response status code |
-| ✕ Clear | Reset all filters |
+| Status dropdown | Filter by HTTP response status code     |
+| ✕ Clear         | Reset all filters                       |
 
 ---
 
@@ -79,11 +83,11 @@ A Chrome extension that records API network traffic and frontend user interactio
 
 Configure these toggles in the popup before recording:
 
-| Setting | Default | Description |
-|---|---|---|
-| Request Headers | ✅ On | Include request headers in recorded entries |
-| Response Headers | ✅ On | Include response headers in recorded entries |
-| Capture API Screenshot | ❌ Off | Take a screenshot after each API request completes |
+| Setting                | Default | Description                                        |
+| ---------------------- | ------- | -------------------------------------------------- |
+| Request Headers        | ✅ On   | Include request headers in recorded entries        |
+| Response Headers       | ✅ On   | Include response headers in recorded entries       |
+| Capture API Screenshot | ❌ Off  | Take a screenshot after each API request completes |
 
 Settings are persisted via `chrome.storage.local`.
 
@@ -126,7 +130,6 @@ Settings are persisted via `chrome.storage.local`.
   "element": "BUTTON",
   "text": "Submit",
   "route": "https://example.com/form",
-  "scrollY": 240,
   "readableTime": "2024-01-15T10:23:50.000Z",
   "screenshot": "data:image/png;base64,..."
 }
@@ -148,14 +151,14 @@ Settings are persisted via `chrome.storage.local`.
 
 ## Permissions
 
-| Permission | Reason |
-|---|---|
-| `debugger` | Attach to tabs to intercept network traffic |
-| `tabs` | Query and capture the active tab |
-| `storage` | Persist user settings across sessions |
-| `downloads` | Save exported JSON files |
-| `activeTab` | Access the currently active tab |
-| `host_permissions: <all_urls>` | Record requests on any website |
+| Permission                     | Reason                                      |
+| ------------------------------ | ------------------------------------------- |
+| `debugger`                     | Attach to tabs to intercept network traffic |
+| `tabs`                         | Query and capture the active tab            |
+| `storage`                      | Persist user settings across sessions       |
+| `downloads`                    | Save exported JSON files                    |
+| `activeTab`                    | Access the currently active tab             |
+| `host_permissions: <all_urls>` | Record requests on any website              |
 
 ---
 
@@ -178,3 +181,4 @@ To reduce noise, the following resource types are **automatically excluded** fro
 - FE recording captures route changes in SPAs by polling `window.location.href` every 800 ms
 - The service worker stays active while recording; recordings are lost if the service worker is terminated before stopping and exporting
 - Screenshots are captured via `chrome.tabs.captureVisibleTab` and embedded as base64 data URLs in the JSON
+- Video recording uses `navigator.mediaDevices.getDisplayMedia` and `MediaRecorder` to capture screen + audio, saved as `.webm` and linked to flow events in the viewer

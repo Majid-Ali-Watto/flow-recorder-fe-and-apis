@@ -13,26 +13,28 @@ const captureApiScreenshots = document.getElementById("captureApiScreenshots");
 chrome.storage.local.get(
   ["includeReqHeaders", "includeResHeaders", "captureApiScreenshots"],
   (data) => {
-    includeReqHeaders.checked = data.includeReqHeaders ?? true;
-    includeResHeaders.checked = data.includeResHeaders ?? true;
+    includeReqHeaders.checked = data.includeReqHeaders ?? false;
+    includeResHeaders.checked = data.includeResHeaders ?? false;
     captureApiScreenshots.checked = data.captureApiScreenshots ?? false;
   },
 );
 
-// Save on change
-includeReqHeaders.addEventListener("change", saveSettings);
-includeResHeaders.addEventListener("change", saveSettings);
-captureApiScreenshots.addEventListener("change", saveSettings);
+function handleChange() {
+  saveSettings(
+    includeReqHeaders.checked,
+    includeResHeaders.checked,
+    captureApiScreenshots.checked,
+  );
+}
 
-saveSettings(
-  includeReqHeaders.checked,
-  includeResHeaders.checked,
-  captureApiScreenshots.checked,
-);
+includeReqHeaders.addEventListener("change", handleChange);
+includeResHeaders.addEventListener("change", handleChange);
+captureApiScreenshots.addEventListener("change", handleChange);
 
 const apiToggle = document.getElementById("apiToggle");
 const feToggle = document.getElementById("feToggle");
 const bothToggle = document.getElementById("bothToggle");
+const screenRecordToggle = document.getElementById("screenRecordToggle");
 
 export let apiRecording = false;
 export let feRecording = false;
@@ -238,5 +240,11 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     updateStatusIndicator(apiRecording, feRecording);
+  });
+});
+
+screenRecordToggle.addEventListener("click", () => {
+  chrome.tabs.create({
+    url: chrome.runtime.getURL("../html/recorder.html"),
   });
 });

@@ -131,8 +131,7 @@ function renderFEEntry(entry, i) {
     ${entry.route ? `<p class="page-url">📍 Route: ${entry.route}</p>` : ""}
     ${entry.element ? `<p class="page-url">🔎 Element: ${entry.element}</p>` : ""}
     ${entry.text ? `<p class="page-url">📝 Text: ${entry.text}</p>` : ""}
-    ${entry.scrollY ? `<p class="page-url">📜 ScrollY: ${entry.scrollY}</p>` : ""}
-  `;
+    `;
 
   const screenshot = renderScreenshot(entry);
   if (screenshot) div.appendChild(screenshot);

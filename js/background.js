@@ -17,8 +17,8 @@ export let isApiRecording = false;
 export let isFeRecording = false;
 
 // Cached settings from popup toggles
-let includeReqHeaders = true;
-let includeResHeaders = true;
+let includeReqHeaders = false;
+let includeResHeaders = false;
 let captureApiScreenshots = false;
 
 // initialize cached settings
@@ -64,11 +64,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     });
   }
 
-  if (message.action === "GET_FLOW") {
-    // return combined flows (API first, then FE)
-    sendResponse({ flow: apiFlow.concat(feFlow) });
-  }
-
   // ---------------- API CONTROL ----------------
   if (message.action === "START_API") {
     await startApiRecording();
@@ -83,12 +78,21 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   }
 
   // ---------------- FE CONTROL ----------------
+
   if (message.action === "START_FE") {
     await startFeRecording();
+    chrome.scripting.executeScript({
+      target: { tabId: attachedTabId },
+      func: () => startRouteTracking(),
+    });
   }
 
   if (message.action === "STOP_FE") {
     stopFeRecording();
+    chrome.scripting.executeScript({
+      target: { tabId: attachedTabId },
+      func: () => stopRouteTracking(),
+    });
   }
 
   if (message.action === "GET_FE_FLOW") {
@@ -108,7 +112,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       element: message.element || "",
       text: message.text || "",
       route: message.route || "",
-      scrollY: message.scrollY ?? 0,
       readableTime: new Date().toISOString(),
       screenshot,
     });
