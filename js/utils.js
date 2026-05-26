@@ -85,13 +85,26 @@ export function renderScreenshot(entry) {
   const det = document.createElement("details");
   det.className = "details-block";
   det.innerHTML = `<summary>📸 Screenshot</summary>`;
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "screenshot-wrapper";
+
   const img = document.createElement("img");
   img.src = entry.screenshot;
   img.alt = "screenshot";
   img.style.maxWidth = "100%";
-  img.style.marginTop = "8px";
   img.style.borderRadius = "4px";
-  det.appendChild(img);
+  wrapper.appendChild(img);
+
+  const dlBtn = document.createElement("a");
+  dlBtn.className = "copy-btn";
+  dlBtn.title = `Download screenshot as screenshot-step${entry.step ?? ""}.png`;
+  dlBtn.textContent = "Download";
+  dlBtn.href = entry.screenshot;
+  dlBtn.download = `screenshot-step${entry.step ?? ""}.png`;
+  wrapper.appendChild(dlBtn);
+
+  det.appendChild(wrapper);
   return det;
 }
 
@@ -157,19 +170,43 @@ export function setButtonState(btn, recording, startLabel, stopLabel) {
 }
 
 // ── Filtering ───────────────────────────────────────────────────────────────
-export function getFilteredFlow(searchInput, methodFilter, statusFilter, flow) {
+export function getFilteredFlow(searchInput, methodFilter, statusFilter, flow, searchScope = {}) {
   const urlQuery = searchInput.value.trim().toLowerCase();
   const method = methodFilter.value;
   const status = statusFilter.value;
+  const {
+    feUrl: scopeFeUrl = true,
+    apiUrl: scopeApiUrl = true,
+    payload: scopePayload = true,
+    response: scopeResponse = true,
+  } = searchScope;
 
   return flow.filter((entry) => {
+    const apiUrl = (entry.request?.url || "").toLowerCase();
+    const feUrl = (entry.page?.url || entry.route || "").toLowerCase();
+
     if (entry.type === "FE_STEP" || entry.type === "INITIAL_SCREEN") {
       if (method || status) return false;
+      if (urlQuery && !(scopeFeUrl && feUrl.includes(urlQuery))) return false;
       return true;
     }
 
-    const url = (entry.request?.url || "").toLowerCase();
-    if (urlQuery && !url.includes(urlQuery)) return false;
+    const postData = (entry.request?.postData || "").toLowerCase();
+    const responseBody =
+      typeof entry.responseBody === "string"
+        ? entry.responseBody.toLowerCase()
+        : entry.responseBody
+          ? JSON.stringify(entry.responseBody).toLowerCase()
+          : "";
+
+    if (
+      urlQuery &&
+      !(scopeApiUrl && apiUrl.includes(urlQuery)) &&
+      !(scopeFeUrl && feUrl.includes(urlQuery)) &&
+      !(scopePayload && postData.includes(urlQuery)) &&
+      !(scopeResponse && responseBody.includes(urlQuery))
+    )
+      return false;
     if (method && entry.request?.method !== method) return false;
     if (status && String(entry.response?.status) !== status) return false;
     return true;
