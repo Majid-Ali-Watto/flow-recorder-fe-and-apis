@@ -1,0 +1,25 @@
+# Cursor Rules — Flow Recorder
+
+## What this is
+A Chrome Extension (Manifest V3). No build step, no bundler, no framework. Vanilla JS ES modules + plain CSS.
+
+## Files
+- `js/background.js` — service worker, recording logic
+- `js/content.js` — injected page script
+- `js/popup.js` — popup UI
+- `js/recorder.js` — video recording
+- `js/viewer.js` — Flow Viewer page
+- `js/utils.js` — shared utilities (filtering, rendering)
+- `styles/viewer.css` — dark theme, CSS custom properties
+
+## Entry types
+- `type: "API"` — has `request.url`, `page.url` (FE page), `request.postData`, `responseBody`, `response.status`
+- `type: "FE_STEP"` — has `route` (not `page.url`), `event`, `element`, `text`
+- `type: "INITIAL_SCREEN"` — has `route`
+
+## Rules
+- Use DOM methods for interactive elements, not innerHTML + inline handlers
+- Search filtering respects `searchScope = { feUrl, apiUrl, payload, response }` — only search/highlight fields whose flag is true
+- CSS tokens are in `:root` in viewer.css — use `var(--accent)`, `var(--surface)`, `var(--border)` etc.
+- Do not add npm dependencies or a build step
+- Do not use `--no-verify` or skip lint hooks

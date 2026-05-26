@@ -200,3 +200,46 @@ input[type="checkbox"]:checked ~ .switch::after {
     opacity: 0.35;
   }
 }
+
+/* ── Developer footer ── */
+.dev-footer {
+  border-top: 1px solid var(--border);
+  padding: 8px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dev-name {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.dev-role {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.dev-links {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 2px;
+}
+
+.dev-links a {
+  font-size: 0.67rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.dev-links a:hover {
+  color: var(--accent);
+}
+
+.dev-sep {
+  font-size: 0.67rem;
+  color: var(--border);
+}

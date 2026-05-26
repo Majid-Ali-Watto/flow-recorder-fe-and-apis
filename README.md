@@ -1,17 +1,23 @@
 # ⚡ Flow Recorder
 
-A Chrome extension that records API network traffic and frontend user interactions — with optional screenshots, and video — and lets you view, filter, and export the results.
+A Chrome extension that records API network traffic and frontend user interactions — with optional screenshots and video — and lets you view, search, filter, and export the results.
 
 ---
 
 ## Features
 
-- **API Recording** — Captures network requests and responses (URL, method, headers, body, status, duration) using the Chrome Debugger API
+- **API Recording** — Captures network requests/responses (URL, method, headers, body, status, duration) via the Chrome Debugger API
 - **FE Recording** — Tracks user interactions (clicks, route changes) with screenshots at each step
-- **Video Recording** — Records a synchronized screen capture (video + audio) alongside API/FE events for replay
+- **Video Recording** — Records a synchronized screen capture (video + audio) alongside API/FE events
 - **Both Modes** — Run API and FE recording simultaneously
-- **Flow Viewer** — Built-in viewer with search, filtering by method/status, and JSON inspection panels
-- **Export** — Downloads recorded flows as `.json` files
+- **Flow Viewer** — Full-page viewer with:
+  - Debounced search across URL, payload, and response body
+  - Scope checkboxes to choose which fields to search (FE URL, API Endpoint, Payload, Response)
+  - Filter by HTTP method and response status
+  - Highlighted search matches in matching fields only
+  - Copy and Download buttons on each request card
+  - Download filtered results as JSON
+- **Export** — Downloads recorded flows as `.json` files; video as `.webm`
 - **Upload & Replay** — Load previously exported JSON files back into the viewer
 - **Configurable** — Toggle request headers, response headers, and per-API screenshot capture
 
@@ -25,13 +31,13 @@ A Chrome extension that records API network traffic and frontend user interactio
 │   ├── background.js         # Service worker: recording logic, debugger events
 │   ├── content.js            # Injected into pages: click & route tracking
 │   ├── popup.js              # Popup UI logic: start/stop controls
+│   ├── recorder.js           # Screen/video recorder
 │   ├── viewer.js             # Flow Viewer page logic
 │   └── utils.js              # Shared utilities (filtering, rendering, export)
-|   └── recorder.js           # Screen/video recorder
 ├── html/
 │   ├── popup.html            # Extension popup
+│   ├── recorder.html         # Screen/video recorder UI
 │   └── viewer.html           # Full-page flow viewer
-|   └── recorder.html         # Screen/video recorder UI
 └── styles/
     ├── popup.css
     └── viewer.css
@@ -59,29 +65,43 @@ A Chrome extension that records API network traffic and frontend user interactio
    - **Start API Recording** — captures network requests only
    - **Start FE Recording** — captures clicks, route changes, and screenshots
    - **Start Video Recording** — captures screen video/audio only
-   - **Start Both Recordings** — runs both simultaneously
+   - **Start Both Recordings** — runs API + FE simultaneously
 4. Interact with the page
-5. Click the active button again to **stop** — the flow is automatically downloaded as a `.json` file and video as `.webm`
+5. Click the active button again to **stop** — the flow downloads as `.json` and video as `.webm`
 
 ### Viewing
 
 - Click **Open Flow Viewer** to open the viewer with the current recorded flow
-- Or upload a previously saved `.json` file using the **📂 Upload JSON** button
+- Or upload a previously saved `.json` file via the **📂 Upload JSON** button
 
-### Filters (Viewer)
+### Search & Filters
 
-| Control         | Description                             |
-| --------------- | --------------------------------------- |
-| Search by URL   | Filter API entries by URL substring     |
-| Method dropdown | Filter by HTTP method (GET, POST, etc.) |
-| Status dropdown | Filter by HTTP response status code     |
-| ✕ Clear         | Reset all filters                       |
+| Control              | Description                                                          |
+| -------------------- | -------------------------------------------------------------------- |
+| Search bar           | Debounced full-text search (250 ms delay)                            |
+| Search scope         | Checkboxes: FE URL, API Endpoint, Payload, Response (all on by default) |
+| Method dropdown      | Filter by HTTP method (GET, POST, PUT, PATCH, DELETE…)               |
+| Status dropdown      | Filter by HTTP response status code                                  |
+| ✕ Clear              | Reset all filters                                                    |
+| ⬇ Download JSON      | Download currently filtered entries as a `.json` file                |
+
+### Per-Entry Actions
+
+Each API request card has:
+
+| Button     | Action                                                      |
+| ---------- | ----------------------------------------------------------- |
+| **Copy**   | Copy the full entry JSON to the clipboard                   |
+| **Download** | Download the entry as `request-step<N>.json`              |
+| **Copy URL** | Copy the API or FE URL to the clipboard (inline per row) |
+
+Screenshots (when present) have a **Download** button that saves the image as `screenshot-step<N>.png`.
 
 ---
 
 ## Settings
 
-Configure these toggles in the popup before recording:
+Configure before recording via the popup:
 
 | Setting                | Default | Description                                        |
 | ---------------------- | ------- | -------------------------------------------------- |
@@ -164,7 +184,7 @@ Settings are persisted via `chrome.storage.local`.
 
 ## Ignored Request Types
 
-To reduce noise, the following resource types are **automatically excluded** from API recordings:
+The following resource types are automatically excluded from API recordings:
 
 - Scripts (`.js`)
 - Stylesheets (`.css`)
@@ -175,10 +195,11 @@ To reduce noise, the following resource types are **automatically excluded** fro
 
 ---
 
-## Notes
+## Technical Notes
 
-- The extension uses **Manifest V3** with a service worker as the background script
-- FE recording captures route changes in SPAs by polling `window.location.href` every 800 ms
-- The service worker stays active while recording; recordings are lost if the service worker is terminated before stopping and exporting
-- Screenshots are captured via `chrome.tabs.captureVisibleTab` and embedded as base64 data URLs in the JSON
-- Video recording uses `navigator.mediaDevices.getDisplayMedia` and `MediaRecorder` to capture screen + audio, saved as `.webm` and linked to flow events in the viewer
+- **Manifest V3** with a service worker as the background script; no build step required
+- All JS files use **ES modules** (`type: "module"`) — no bundler, no transpilation
+- FE recording detects SPA route changes by polling `window.location.href` every 800 ms
+- Screenshots are captured via `chrome.tabs.captureVisibleTab` and embedded as base64 data URLs
+- Video recording uses `navigator.mediaDevices.getDisplayMedia` + `MediaRecorder`, saved as `.webm`
+- The service worker stays active while recording; flows are lost if it is terminated before export

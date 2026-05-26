@@ -13,17 +13,17 @@
     <div class="body">
       <!-- toggles -->
       <div class="toggles">
-        <label class="toggle-row">
+        <label class="toggle-row" title="Include HTTP request headers (e.g. Authorization, Content-Type) in each recorded entry">
           <span>Request Headers</span>
           <input type="checkbox" id="includeReqHeaders" checked />
           <span class="switch"></span>
         </label>
-        <label class="toggle-row">
+        <label class="toggle-row" title="Include HTTP response headers in each recorded entry">
           <span>Response Headers</span>
           <input type="checkbox" id="includeResHeaders" checked />
           <span class="switch"></span>
         </label>
-        <label class="toggle-row">
+        <label class="toggle-row" title="Take a screenshot of the visible page after each API request completes. Increases exported file size.">
           <span>Capture API Screenshot</span>
           <input type="checkbox" id="captureApiScreenshots" />
           <span class="switch"></span>
@@ -37,17 +37,17 @@
       </div>
 
       <!-- action buttons -->
-      <button class="btn btn-start" id="apiToggle">Start API Recording</button>
-      <button class="btn btn-start" id="feToggle">Start FE Recording</button>
-      <button class="btn btn-start" id="bothToggle">
+      <button class="btn btn-start" id="apiToggle" title="Capture all network requests and responses on the active tab — URL, method, headers, payload, status code, and timing">Start API Recording</button>
+      <button class="btn btn-start" id="feToggle" title="Track user interactions on the active tab — clicks, navigation, and screenshots at each step">Start FE Recording</button>
+      <button class="btn btn-start" id="bothToggle" title="Run API recording and FE interaction tracking simultaneously">
         Start Both Recordings
       </button>
 
-      <button class="btn btn-start" id="screenRecordToggle">
+      <button class="btn btn-start" id="screenRecordToggle" title="Record the screen as a video file (.webm) with optional audio">
         Start Screen Recording
       </button>
 
-      <button class="btn btn-viewer" id="openViewer">
+      <button class="btn btn-viewer" id="openViewer" title="Open the Flow Viewer to inspect, search, filter, and export the recorded flow">
         <svg
           width="12"
           height="12"
@@ -62,6 +62,17 @@
         </svg>
         Open Flow Viewer
       </button>
+    </div>
+
+    <div class="dev-footer">
+      <span class="dev-name">Majid Ali</span>
+      <span class="dev-sep">·</span>
+      <span class="dev-role">Full Stack Web Developer</span>
+      <div class="dev-links">
+        <a href="https://majidev.netlify.app" target="_blank">majidev.netlify.app</a>
+        <span class="dev-sep">·</span>
+        <a href="https://github.com/Majid-Ali-Watto" target="_blank">GitHub</a>
+      </div>
     </div>
 
     <script type="module" src="../js/popup.js"></script>
