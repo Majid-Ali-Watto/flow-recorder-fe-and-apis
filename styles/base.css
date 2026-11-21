@@ -1,0 +1,659 @@
+/* ==========================================================
+   Flow Recorder — shared design system
+   Tokens (dark default + light), typography and base components
+   used by every extension page. Page files only add layout.
+   ========================================================== */
+
+:root {
+  color-scheme: dark;
+
+  /* surfaces */
+  --bg: #0a0c13;
+  --bg-glow-1: rgba(91, 124, 255, 0.16);
+  --bg-glow-2: rgba(139, 92, 246, 0.12);
+  --surface: #11141e;
+  --surface-2: #171b28;
+  --surface-3: #1f2434;
+  --surface-glass: rgba(17, 20, 30, 0.78);
+  --code-bg: #0c0f18;
+  --border: #242a3c;
+  --border-strong: #333a52;
+
+  /* text */
+  --text: #e7eaf3;
+  --text-muted: #8c94aa;
+  --text-faint: #5f6782;
+
+  /* brand */
+  --accent: #6e8cff;
+  --accent-2: #9d7bff;
+  --accent-grad: linear-gradient(135deg, #5b84ff 0%, #8b5cf6 100%);
+  --accent-soft: rgba(110, 140, 255, 0.14);
+  --on-accent: #ffffff;
+
+  /* semantic palette */
+  --green: #34d399;
+  --blue: #60a5fa;
+  --amber: #fbbf24;
+  --violet: #a78bfa;
+  --red: #f87171;
+  --cyan: #22d3ee;
+  --slate: #94a3b8;
+  --teal: #2dd4bf;
+
+  /* shape & depth */
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 1px 0 rgba(255, 255, 255, 0.03) inset;
+  --shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.5);
+  --ring: 0 0 0 3px rgba(110, 140, 255, 0.35);
+
+  /* type */
+  --font: "Inter", "Segoe UI Variable Text", "SF Pro Text", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: "JetBrains Mono", "SF Mono", "Cascadia Code", "Fira Code", ui-monospace, monospace;
+
+  /* legacy aliases (kept for older selectors) */
+  --surface2: var(--surface-2);
+  --accent2: var(--accent-2);
+  --get: var(--green);
+  --post: var(--blue);
+  --put: var(--amber);
+  --patch: var(--violet);
+  --delete: var(--red);
+  --head: var(--slate);
+  --options: var(--slate);
+  --ws: var(--cyan);
+  --warn: var(--amber);
+}
+
+/* light theme: follows the OS unless the user forced dark */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --bg: #f4f6fb;
+    --bg-glow-1: rgba(91, 124, 255, 0.1);
+    --bg-glow-2: rgba(139, 92, 246, 0.08);
+    --surface: #ffffff;
+    --surface-2: #f3f5fa;
+    --surface-3: #e9ecf4;
+    --surface-glass: rgba(255, 255, 255, 0.82);
+    --code-bg: #f6f8fc;
+    --border: #e1e5ef;
+    --border-strong: #cdd3e1;
+    --text: #151826;
+    --text-muted: #59627a;
+    --text-faint: #8a92a7;
+    --accent: #4d68f5;
+    --accent-2: #7c4dff;
+    --accent-soft: rgba(77, 104, 245, 0.1);
+    --green: #059669;
+    --blue: #2563eb;
+    --amber: #b45309;
+    --violet: #7c3aed;
+    --red: #dc2626;
+    --cyan: #0891b2;
+    --slate: #64748b;
+    --teal: #0d9488;
+    --shadow-sm: 0 1px 2px rgba(20, 24, 40, 0.06);
+    --shadow: 0 6px 20px rgba(20, 24, 40, 0.07), 0 1px 2px rgba(20, 24, 40, 0.05);
+    --shadow-lg: 0 18px 40px rgba(20, 24, 40, 0.14);
+    --ring: 0 0 0 3px rgba(77, 104, 245, 0.25);
+  }
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f4f6fb;
+  --bg-glow-1: rgba(91, 124, 255, 0.1);
+  --bg-glow-2: rgba(139, 92, 246, 0.08);
+  --surface: #ffffff;
+  --surface-2: #f3f5fa;
+  --surface-3: #e9ecf4;
+  --surface-glass: rgba(255, 255, 255, 0.82);
+  --code-bg: #f6f8fc;
+  --border: #e1e5ef;
+  --border-strong: #cdd3e1;
+  --text: #151826;
+  --text-muted: #59627a;
+  --text-faint: #8a92a7;
+  --accent: #4d68f5;
+  --accent-2: #7c4dff;
+  --accent-soft: rgba(77, 104, 245, 0.1);
+  --green: #059669;
+  --blue: #2563eb;
+  --amber: #b45309;
+  --violet: #7c3aed;
+  --red: #dc2626;
+  --cyan: #0891b2;
+  --slate: #64748b;
+  --teal: #0d9488;
+  --shadow-sm: 0 1px 2px rgba(20, 24, 40, 0.06);
+  --shadow: 0 6px 20px rgba(20, 24, 40, 0.07), 0 1px 2px rgba(20, 24, 40, 0.05);
+  --shadow-lg: 0 18px 40px rgba(20, 24, 40, 0.14);
+  --ring: 0 0 0 3px rgba(77, 104, 245, 0.25);
+}
+
+/* ── Reset & base ─────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(1200px 600px at 10% -10%, var(--bg-glow-1), transparent 60%),
+    radial-gradient(900px 500px at 100% 0%, var(--bg-glow-2), transparent 55%);
+  background-attachment: fixed;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+code,
+kbd {
+  font-family: var(--mono);
+  font-size: 0.86em;
+}
+kbd {
+  padding: 1px 6px;
+  border: 1px solid var(--border-strong);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  background: var(--surface-2);
+}
+
+strong {
+  font-weight: 600;
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+[hidden] {
+  display: none !important;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--ring);
+}
+
+::selection {
+  background: var(--accent-soft);
+}
+
+/* scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ── Brand ────────────────────────────────────────────────── */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+.brand-logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(91, 124, 255, 0.35);
+}
+.brand-name {
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+}
+.brand-name .grad {
+  background: var(--accent-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ── Buttons ──────────────────────────────────────────────── */
+.btn,
+.tool-btn,
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font: inherit;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s,
+    box-shadow 0.15s,
+    transform 0.06s;
+}
+.btn {
+  padding: 9px 14px;
+  font-size: 13px;
+}
+.tool-btn {
+  padding: 6px 11px;
+  font-size: 12.5px;
+  border-radius: 8px;
+}
+.icon-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 9px;
+  color: var(--text-muted);
+}
+.btn:hover,
+.tool-btn:hover,
+.icon-btn:hover {
+  background: var(--surface-3);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+.btn:active,
+.tool-btn:active,
+.icon-btn:active {
+  transform: translateY(1px);
+}
+.btn:disabled,
+.tool-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+.btn svg,
+.tool-btn svg,
+.icon-btn svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.btn-primary {
+  color: var(--on-accent);
+  background: var(--accent-grad);
+  border-color: transparent;
+  box-shadow: 0 6px 18px rgba(91, 124, 255, 0.35);
+}
+.btn-primary:hover {
+  color: var(--on-accent);
+  background: var(--accent-grad);
+  border-color: transparent;
+  filter: brightness(1.08);
+  box-shadow: 0 8px 24px rgba(91, 124, 255, 0.45);
+}
+
+.btn-ghost {
+  background: transparent;
+}
+
+.btn-danger,
+.tool-btn.danger {
+  color: var(--red);
+  border-color: color-mix(in srgb, var(--red) 35%, transparent);
+  background: color-mix(in srgb, var(--red) 8%, transparent);
+}
+.btn-danger:hover,
+.tool-btn.danger:hover {
+  color: var(--red);
+  border-color: var(--red);
+  background: color-mix(in srgb, var(--red) 14%, transparent);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+/* ── Form controls ────────────────────────────────────────── */
+input[type="text"],
+input[type="search"],
+input[type="number"],
+select,
+textarea {
+  font: inherit;
+  font-size: 13px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 10px;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+input:hover,
+select:hover,
+textarea:hover {
+  border-color: var(--border-strong);
+}
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: var(--ring);
+}
+select {
+  appearance: none;
+  padding-right: 30px;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--text-muted) 50%),
+    linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+  background-position:
+    calc(100% - 15px) 52%,
+    calc(100% - 10px) 52%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+textarea {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  resize: vertical;
+}
+
+/* switch: <input type="checkbox" class="switch"> */
+input.switch {
+  appearance: none;
+  position: relative;
+  flex-shrink: 0;
+  width: 36px;
+  height: 20px;
+  border-radius: 20px;
+  background: var(--surface-3);
+  border: 1px solid var(--border-strong);
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+input.switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform 0.2s,
+    background 0.2s;
+}
+input.switch:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+input.switch:checked::after {
+  transform: translateX(16px);
+  background: #fff;
+}
+
+/* chips: <label class="chip"><input type="checkbox"> Text</label> */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px;
+  font-size: 12px;
+  color: var(--text-muted);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s;
+}
+.chip input {
+  display: none;
+}
+.chip::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-faint);
+  transition: background 0.15s;
+}
+.chip:has(input:checked) {
+  color: var(--text);
+  background: var(--accent-soft);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+.chip:has(input:checked)::before {
+  background: var(--accent);
+}
+.chip:hover {
+  border-color: var(--border-strong);
+}
+
+/* ── Badges ───────────────────────────────────────────────── */
+.method-badge,
+.status-badge {
+  --tone: var(--slate);
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--tone);
+  background: color-mix(in srgb, var(--tone) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--tone) 28%, transparent);
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.method-get { --tone: var(--green); }
+.method-post { --tone: var(--blue); }
+.method-put { --tone: var(--amber); }
+.method-patch,
+.method-fe { --tone: var(--violet); }
+.method-delete { --tone: var(--red); }
+.method-head,
+.method-options { --tone: var(--slate); }
+.method-ws { --tone: var(--cyan); }
+
+.status-2xx { --tone: var(--green); }
+.status-3xx { --tone: var(--blue); }
+.status-4xx { --tone: var(--amber); }
+.status-5xx { --tone: var(--red); }
+.status-unknown { --tone: var(--slate); }
+
+/* ── Panels / details / JSON ──────────────────────────────── */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.details-block {
+  margin-top: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.details-block > summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+.details-block > summary::-webkit-details-marker {
+  display: none;
+}
+.details-block > summary::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 0.15s;
+}
+.details-block[open] > summary::before {
+  transform: rotate(45deg);
+}
+.details-block > summary:hover {
+  color: var(--text);
+}
+.details-block[open] > summary {
+  border-bottom: 1px solid var(--border);
+}
+
+.json-wrapper,
+.screenshot-wrapper {
+  position: relative;
+  background: var(--code-bg);
+}
+.json-pre {
+  max-height: 420px;
+  overflow: auto;
+  padding: 12px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.screenshot-wrapper {
+  padding: 14px;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  padding: 3px 10px;
+  font: inherit;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  background: var(--surface-glass);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+}
+.copy-btn:hover {
+  color: var(--text);
+  border-color: var(--accent);
+  text-decoration: none;
+}
+.copied,
+.copy-btn.copied {
+  color: var(--green) !important;
+  border-color: var(--green) !important;
+  background: color-mix(in srgb, var(--green) 12%, transparent) !important;
+}
+
+/* ── Footer ───────────────────────────────────────────────── */
+.dev-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  padding: 18px 24px;
+  font-size: 12px;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+}
+.dev-name {
+  font-weight: 600;
+  color: var(--text);
+}
+.dev-role {
+  color: var(--text-faint);
+}
+.dev-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  margin-left: auto;
+}
+.dev-links a {
+  color: var(--text-muted);
+}
+.dev-links a:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+.dev-sep {
+  color: var(--text-faint);
+}
+
+/* ── Animations ───────────────────────────────────────────── */
+@keyframes pulse-dot {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--red) 60%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 8px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

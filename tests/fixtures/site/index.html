@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head><meta charset="UTF-8" /><title>Flow Recorder test site</title></head>
+  <body>
+    <h1>Test site</h1>
+    <button id="go" data-testid="load-data">Load data</button>
+    <button id="ws">Open socket</button>
+    <button id="sse">Open stream</button>
+    <button id="err">Make errors</button>
+    <button id="spa">Go to SPA route</button>
+    <form id="form" onsubmit="return false">
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" />
+      <input id="pw" name="password" type="password" />
+      <input id="fullname" name="fullname" type="text" placeholder="Full name" />
+      <label><input id="remember" name="remember" type="checkbox" /> Remember me</label>
+      <select id="plan" name="plan"><option value="free">Free</option><option value="pro">Pro</option></select>
+    </form>
+    <script src="app.js"></script>
+  </body>
+</html>

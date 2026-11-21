@@ -1,0 +1,67 @@
+<!doctype html>
+<!-- Generated from PRIVACY.md by scripts/build-legal-pages.mjs — edit the Markdown, then rerun the script. -->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Privacy Policy · Flow Recorder</title>
+    <script src="../js/theme-init.js"></script>
+    <link rel="stylesheet" href="../styles/base.css" />
+    <link rel="stylesheet" href="../styles/legal.css" />
+  </head>
+  <body>
+    <header class="legal-header">
+      <div class="brand">
+        <img class="brand-logo" src="../icons/icon48.png" alt="" />
+        <span class="brand-name">Flow <span class="grad">Recorder</span></span>
+      </div>
+      <nav class="legal-nav">
+        <a href="privacy.html" aria-current="page">Privacy Policy</a>
+        <a href="terms.html">Terms of Use</a>
+      </nav>
+    </header>
+    <main class="legal">
+      <h1>Flow Recorder — Privacy Policy</h1>
+      <p><strong>Effective date:</strong> 21 November 2026<br /><strong>Developer:</strong> Majid Ali, Full Stack Web Developer — <a href="https://majidev.netlify.app" target="_blank" rel="noopener noreferrer">majidev.netlify.app</a> · <a href="https://github.com/Majid-Ali-Watto" target="_blank" rel="noopener noreferrer">github.com/Majid-Ali-Watto</a></p>
+      <p>Flow Recorder is a Chrome extension for developers and testers. It records network traffic and page interactions in a browser tab <strong>only when you start a recording</strong>, and keeps everything on your device.</p>
+      <h2>The short version</h2>
+      <ul><li>Flow Recorder has <strong>no servers, accounts, analytics, ads or trackers</strong>.</li><li>Recorded data <strong>never leaves your computer</strong> unless you share an exported file yourself.</li><li>Recordings are kept in the extension's own storage on this device (recording history) until you delete them, or you can turn history off.</li><li>Nothing is recorded until you press a Start button. The toolbar badge shows <strong>API</strong>, <strong>FE</strong> or <strong>REC</strong> while a recording is running.</li><li>Data is not sold, shared with anyone, or used for any purpose other than showing it back to you.</li></ul>
+      <h2>What is recorded, and when</h2>
+      <div class="table-wrap"><table><thead><tr><th>Mode</th><th>Started by</th><th>What it captures</th></tr></thead><tbody><tr><td><strong>API recording</strong></td><td>"Start API Recording" or <code>Alt+Shift+A</code></td><td>For the one tab you chose: request URL, method, request body, response status, MIME type, response body, timing breakdown, transfer size, protocol, server IP address, and the URL of the page that made the request. Also, unless turned off in Settings: console errors and warnings, uncaught JavaScript exceptions (message, file location, stack trace), WebSocket connections with up to 1,000 frames each, and Server-Sent Events. Request/response headers only if you turn those toggles on. A screenshot after each request only if "Capture API Screenshot" is on. If you set "Only record these hosts", requests to other hosts are ignored.</td></tr><tr><td><strong>FE recording</strong></td><td>"Start FE Recording" or <code>Alt+Shift+F</code></td><td>For the one tab you chose: clicks (including where on the screen you clicked), double-clicks, form changes, scrolls, Enter/Escape/Tab key presses, route changes and page loads, short element text (up to 100 characters), values of non-sensitive form fields (up to 200 characters), identifying attributes of the element you used (tag, id, name, role, label, placeholder, <code>data-testid</code>, and a CSS selector), the page URL, and a screenshot of that tab at each step.</td></tr><tr><td><strong>Screen recording</strong></td><td>"Start Screen Recording"</td><td>Video (and audio if you allow it) of the tab, window or screen you pick in Chrome's sharing dialog. Optionally it also starts API and FE recording of a tab you select, and stores the video start time so the viewer can jump to each step.</td></tr></tbody></table></div>
+      <p>What Flow Recorder <strong>does not</strong> do:</p>
+      <ul><li>It does not record the characters you type. Only Enter, Escape and Tab are logged.</li><li>It does not read values from password fields, hidden fields, payment-card fields, one-time-code fields, fields whose name or label suggests a secret (such as PIN, CVV, SSN or token), or fields you list under "Extra fields to mask". Those are stored as <code>[REDACTED]</code>.</li><li>It does not take screenshots of other tabs. If you switch away from the recorded tab, screenshots are skipped until you return.</li><li>It does not record anything in tabs you did not start a recording on.</li></ul>
+      <h3>Secret masking</h3>
+      <p>The <strong>Mask Secrets</strong> setting is on by default. It replaces <code>Authorization</code>, <code>Cookie</code>, <code>Set-Cookie</code>, API keys and similar headers, and JSON or form fields named like passwords, tokens or secrets, with <code>[REDACTED]</code>. It applies to request and response bodies, URL query strings, WebSocket frames and Server-Sent Events. You can add your own field names under <strong>Settings → Extra fields to mask</strong>. Console messages and screenshots are not masked. Masking is best effort: it cannot recognise every sensitive value, so <strong>always review an export before sharing it</strong>.</p>
+      <h2>Where data is kept</h2>
+      <div class="table-wrap"><table><thead><tr><th>Data</th><th>Location</th><th>How long</th></tr></thead><tbody><tr><td>Current recording</td><td>Memory of the extension's background worker</td><td>Until you click <strong>Clear All Data</strong>, start a new recording, disable or remove the extension, or close Chrome</td></tr><tr><td>Recording history (when <strong>Keep history</strong> is on, the default)</td><td>The extension's IndexedDB storage on your device</td><td>The newest 20 recordings by default (adjustable 1–100). Older ones are deleted automatically. Delete individual recordings in the viewer, or everything with <strong>Clear All Data</strong> or <strong>Settings → Delete all saved history</strong>. Removing the extension deletes it too.</td></tr><tr><td>Settings</td><td><code>chrome.storage.local</code> on your device</td><td>Until you change them or remove the extension</td></tr><tr><td>Recording status (which tab is being recorded, last session id)</td><td><code>chrome.storage.session</code> on your device</td><td>Cleared when Chrome closes</td></tr><tr><td>Exported files (<code>.json</code>, <code>.har</code>, <code>.html</code> reports, generated test scripts, <code>.webm</code> video)</td><td>Your Downloads folder</td><td>Until you delete them</td></tr></tbody></table></div>
+      <p>Exported files can contain sensitive information from the pages you recorded, such as personal data, session tokens (if masking is off), console messages and screenshots. HTML reports embed screenshots, and generated Playwright/Cypress tests contain the form values you typed (except masked fields). You control those files and are responsible for storing and sharing them safely.</p>
+      <p>The video you load into the viewer to sync with a recording is opened locally in that page. It is not copied or uploaded.</p>
+      <h2>Permissions and why they are needed</h2>
+      <div class="table-wrap"><table><thead><tr><th>Permission</th><th>Why</th></tr></thead><tbody><tr><td><code>debugger</code></td><td>Reads network requests and responses, WebSocket/SSE messages and console errors in the tab you are API-recording. Chrome shows a "started debugging this browser" banner while it is active.</td></tr><tr><td><code>tabs</code>, <code>activeTab</code></td><td>Finds the tab you want to record and takes screenshots of it.</td></tr><tr><td>Access to all sites (<code>&lt;all_urls&gt;</code>) and a content script on all pages</td><td>Lets you record any site you are testing, and lets the content script report interactions in the recorded tab. On tabs that are not being recorded, the content script does nothing and sends nothing.</td></tr><tr><td><code>storage</code></td><td>Saves your settings and the current recording status. (Recording history uses the extension's built-in IndexedDB storage, which needs no permission.)</td></tr><tr><td><code>downloads</code></td><td>Saves exported recordings to your Downloads folder.</td></tr></tbody></table></div>
+      <p>Screen recording uses the standard browser screen-sharing prompt (<code>getDisplayMedia</code>) and needs no extra permission. Keyboard shortcuts and the Settings page need no permission either.</p>
+      <h2>Third parties</h2>
+      <p>Flow Recorder sends no data to third parties. The links to the developer's website and GitHub in the extension open those sites only when you click them. Those sites have their own privacy policies.</p>
+      <h2>Chrome Web Store User Data Policy</h2>
+      <p>Flow Recorder's use of information complies with the <a href="https://developer.chrome.com/docs/webstore/program-policies/user-data-faq" target="_blank" rel="noopener noreferrer">Chrome Web Store User Data Policy</a>, including the Limited Use requirements. Data is used only to provide the recording and viewing features you request. It is not transferred, sold, used for advertising, or used to determine creditworthiness.</p>
+      <h2>Children</h2>
+      <p>Flow Recorder is a developer tool and is not directed at children under 13.</p>
+      <h2>Your choices</h2>
+      <ul><li>Do not start a recording on pages with information you do not want captured.</li><li>Keep <strong>Mask Secrets</strong> on, and leave the header toggles off unless you need headers.</li><li>Use <strong>Settings → Only record these hosts</strong> to capture only the API you are testing.</li><li>Turn off console or WebSocket capture in Settings if you do not need them.</li><li>Turn off <strong>Keep history</strong> if you do not want recordings saved on disk.</li><li>Click <strong>Clear All Data</strong> in the popup to delete the current recording and all saved history at any time.</li><li>Remove the extension from <code>chrome://extensions</code> to delete its settings, history and any in-memory data.</li></ul>
+      <h2>Changes to this policy</h2>
+      <p>If this policy changes, the new version will be published in this repository and shipped with the extension, and the effective date above will be updated.</p>
+      <h2>Contact</h2>
+      <p>Questions or concerns: open an issue at <a href="https://github.com/Majid-Ali-Watto/flow-recorder-fe-and-apis/issues" target="_blank" rel="noopener noreferrer">github.com/Majid-Ali-Watto/flow-recorder-fe-and-apis/issues</a>, or reach Majid Ali via <a href="https://majidev.netlify.app" target="_blank" rel="noopener noreferrer">majidev.netlify.app</a>.</p>
+    </main>
+    <footer class="dev-footer">
+      <span class="dev-name">Majid Ali</span>
+      <span class="dev-role">Full Stack Web Developer</span>
+      <div class="dev-links">
+        <a href="https://majidev.netlify.app" target="_blank" rel="noopener noreferrer">majidev.netlify.app</a>
+        <span class="dev-sep">·</span>
+        <a href="https://github.com/Majid-Ali-Watto" target="_blank" rel="noopener noreferrer">github.com/Majid-Ali-Watto</a>
+        <span class="dev-sep">·</span>
+        <a href="terms.html">Terms of Use</a>
+      </div>
+    </footer>
+  </body>
+</html>

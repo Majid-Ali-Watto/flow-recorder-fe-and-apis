@@ -13,6 +13,10 @@ Chrome Extension (Manifest V3) that records API requests and frontend interactio
 - `js/viewer.js` — Flow Viewer page (rendering + event wiring)
 - `js/utils.js` — shared pure utilities (filtering, rendering helpers)
 - `styles/viewer.css` — dark theme with CSS custom properties (`var(--accent)`, `var(--surface)`, etc.)
+- `js/history.js` — IndexedDB history; `js/options.js` — settings page
+- `js/exporters.js`, `js/diff.js` — pure exporters (cURL, HAR, report, Playwright, Cypress) and flow comparison
+- `html/privacy.html`, `html/terms.html` — generated from `PRIVACY.md` / `TERMS.md` via `node scripts/build-legal-pages.mjs`
+- Tests: `node --test "tests/*.test.mjs"` (no npm)
 
 ## Entry shapes
 

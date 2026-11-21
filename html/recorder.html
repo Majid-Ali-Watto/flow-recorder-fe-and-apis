@@ -1,18 +1,61 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Flow Screen Recorder</title>
-    <link rel="stylesheet" href="../styles/viewer.css" />
-    <link rel="stylesheet" href="../styles/popup.css" />
+    <script src="../js/theme-init.js"></script>
+    <link rel="stylesheet" href="../styles/base.css" />
+    <link rel="stylesheet" href="../styles/options.css" />
   </head>
-  <body>
-    <div id="flowContainer">
-      <h2 class="toolbar-title">🎥 Screen Recording</h2>
+  <body class="recorder-page">
+    <header class="page-header">
+      <div class="brand">
+        <img class="brand-logo" src="../icons/icon48.png" alt="" />
+        <span class="brand-name">Flow <span class="grad">Recorder</span></span>
+      </div>
+      <button class="icon-btn" id="themeToggle" type="button"></button>
+    </header>
 
-      <button class="btn btn-start" id="start">Start Recording</button>
-      <button class="btn btn-start" id="stop" disabled>Stop Recording</button>
-    </div>
+    <main class="options">
+      <section class="card rec-hero">
+        <div class="rec-visual">
+          <div class="rec-ring"><span class="rec-core"></span></div>
+          <div class="rec-timer" id="timer">00:00</div>
+          <div class="rec-state" id="recState">Ready to record</div>
+        </div>
+        <div class="rec-controls">
+          <button class="btn btn-rec" id="start">
+            <span class="rec-dot"></span>
+            Start recording
+          </button>
+          <button class="btn" id="stop" disabled>
+            <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+            Stop &amp; save
+          </button>
+        </div>
+        <p class="recorder-status" id="status" role="status">The video is saved to your Downloads folder and never uploaded.</p>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <span class="card-icon tone-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></span>
+          <div><h2>Sync with a flow recording</h2><p>Optional: each step gets a ▶ button in the viewer that jumps to that moment.</p></div>
+        </div>
+        <label class="opt-block" for="tabSelect">
+          <span class="opt-text"><strong>Tab to record</strong><small>Pick the same tab in Chrome's sharing dialog. Screenshots are taken only while that tab is visible.</small></span>
+          <select id="tabSelect"></select>
+        </label>
+        <label class="opt-row">
+          <span class="opt-text"><strong>Also record API traffic</strong><small>Network, console errors, WebSockets and SSE.</small></span>
+          <input type="checkbox" class="switch" id="syncApi" checked />
+        </label>
+        <label class="opt-row">
+          <span class="opt-text"><strong>Also record FE interactions</strong><small>Clicks, inputs and navigation with screenshots.</small></span>
+          <input type="checkbox" class="switch" id="syncFe" checked />
+        </label>
+      </section>
+    </main>
     <script type="module" src="../js/recorder.js"></script>
   </body>
 </html>

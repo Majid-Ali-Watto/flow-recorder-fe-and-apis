@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flow Recorder Settings</title>
+    <script src="../js/theme-init.js"></script>
+    <link rel="stylesheet" href="../styles/base.css" />
+    <link rel="stylesheet" href="../styles/options.css" />
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="brand">
+        <img class="brand-logo" src="../icons/icon48.png" alt="" />
+        <span class="brand-name">Flow <span class="grad">Recorder</span></span>
+      </div>
+      <button class="icon-btn" id="themeToggle" type="button"></button>
+    </header>
+
+    <main class="options">
+      <div class="page-title">
+        <h1>Settings</h1>
+        <p class="muted">Changes save automatically and apply to the next captured request or step. <span class="saved" id="savedNote" hidden>✓ Saved</span></p>
+      </div>
+
+      <section class="card">
+        <div class="card-head">
+          <span class="card-icon tone-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+          <div><h2>Privacy</h2><p>What gets hidden before anything is stored.</p></div>
+        </div>
+        <label class="opt-row">
+          <span class="opt-text"><strong>Mask secrets</strong><small>Replace Authorization/Cookie headers, tokens, passwords and similar fields with [REDACTED]. Best effort: review exports before sharing.</small></span>
+          <input type="checkbox" class="switch" id="maskSecrets" />
+        </label>
+        <label class="opt-block" for="customMaskKeys">
+          <span class="opt-text"><strong>Extra fields to mask</strong><small>Header names, JSON keys, form field names or query parameters, separated by commas or new lines (case-insensitive). Example: <code>x-tenant-key, dob, phoneNumber</code></small></span>
+          <textarea id="customMaskKeys" rows="3" spellcheck="false" placeholder="x-tenant-key, dob, phoneNumber"></textarea>
+        </label>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <span class="card-icon tone-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h11l-3-3M17 17H6l3 3"/></svg></span>
+          <div><h2>API recording</h2><p>What the debugger captures from the recorded tab.</p></div>
+        </div>
+        <label class="opt-block" for="hostAllowList">
+          <span class="opt-text"><strong>Only record these hosts</strong><small>Leave empty to record every host. One per line or comma-separated. Supports <code>api.example.com</code>, <code>*.example.com</code>, <code>localhost:3000</code>.</small></span>
+          <textarea id="hostAllowList" rows="3" spellcheck="false" placeholder="api.example.com&#10;*.internal.example.com"></textarea>
+        </label>
+        <label class="opt-row">
+          <span class="opt-text"><strong>Request headers</strong><small>Include request headers in each entry.</small></span>
+          <input type="checkbox" class="switch" id="includeReqHeaders" />
+        </label>
+        <label class="opt-row">
+          <span class="opt-text"><strong>Response headers</strong><small>Include response headers in each entry.</small></span>
+          <input type="checkbox" class="switch" id="includeResHeaders" />
+        </label>
+        <label class="opt-row">
+          <span class="opt-text"><strong>Screenshot after each request</strong><small>Increases file size; skipped when requests arrive faster than ~2 per second.</small></span>
+          <input type="checkbox" class="switch" id="captureApiScreenshots" />
+        </label>
+        <label class="opt-row">
+          <span class="opt-text"><strong>Console errors &amp; exceptions</strong><small>console.error / console.warn, uncaught exceptions and browser warnings from the recorded tab.</small></span>
+          <input type="checkbox" class="switch" id="captureConsole" />
+        </label>
+        <label class="opt-row">
+          <span class="opt-text"><strong>WebSocket frames</strong><small>Connections and up to 1,000 frames each. Server-Sent Events are always recorded with their request.</small></span>
+          <input type="checkbox" class="switch" id="captureWebSockets" />
+        </label>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <span class="card-icon tone-violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+          <div><h2>History</h2><p>Recordings saved in this browser only.</p></div>
+        </div>
+        <label class="opt-row">
+          <span class="opt-text"><strong>Keep recording history on this device</strong><small>Recordings survive browser restarts and can be reopened from the viewer. Turning this off also disables recovery if Chrome restarts the extension mid-recording.</small></span>
+          <input type="checkbox" class="switch" id="keepHistory" />
+        </label>
+        <label class="opt-row" for="historyLimit">
+          <span class="opt-text"><strong>Recordings to keep</strong><small>Older recordings are deleted automatically (1–100).</small></span>
+          <input type="number" id="historyLimit" min="1" max="100" step="1" />
+        </label>
+        <div class="opt-row">
+          <span class="opt-text"><strong>Delete saved history</strong><small id="historyStatus" role="status">A recording in progress is kept.</small></span>
+          <button id="clearHistory" class="tool-btn danger">Delete all</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <span class="card-icon tone-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg></span>
+          <div><h2>Keyboard shortcuts</h2><p>Work on any tab, even with the popup closed.</p></div>
+        </div>
+        <ul id="shortcutList" class="shortcut-list"></ul>
+        <div class="card-foot"><button id="editShortcuts" class="tool-btn">Change shortcuts…</button></div>
+      </section>
+    </main>
+
+    <footer class="dev-footer">
+      <span class="dev-name">Majid Ali</span>
+      <span class="dev-role">Full Stack Web Developer</span>
+      <div class="dev-links">
+        <a href="https://majidev.netlify.app" target="_blank" rel="noopener noreferrer">majidev.netlify.app</a>
+        <span class="dev-sep">·</span>
+        <a href="https://github.com/Majid-Ali-Watto" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <span class="dev-sep">·</span>
+        <a href="privacy.html" target="_blank">Privacy Policy</a>
+        <span class="dev-sep">·</span>
+        <a href="terms.html" target="_blank">Terms of Use</a>
+      </div>
+    </footer>
+    <script type="module" src="../js/options.js"></script>
+  </body>
+</html>

@@ -1,8 +1,15 @@
 {
   "manifest_version": 3,
   "name": "Flow Recorder",
-  "version": "1.0",
-  "description": "Records API requests, responses and screenshots",
+  "version": "1.2.0",
+  "description": "Record API traffic, console errors, WebSockets and user interactions locally; export HAR, reports and Playwright/Cypress tests.",
+  "homepage_url": "https://github.com/Majid-Ali-Watto/flow-recorder-fe-and-apis",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
   "permissions": ["debugger", "tabs", "storage", "downloads", "activeTab"],
   "host_permissions": ["<all_urls>"],
 
@@ -18,6 +25,33 @@
     }
   ],
   "action": {
-    "default_popup": "./html/popup.html"
+    "default_popup": "./html/popup.html",
+    "default_title": "Flow Recorder",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png"
+    }
+  },
+  "options_ui": {
+    "page": "html/options.html",
+    "open_in_tab": true
+  },
+  "commands": {
+    "toggle-api": {
+      "suggested_key": { "default": "Alt+Shift+A" },
+      "description": "Start / stop API recording on the current tab"
+    },
+    "toggle-fe": {
+      "suggested_key": { "default": "Alt+Shift+F" },
+      "description": "Start / stop FE recording on the current tab"
+    },
+    "open-viewer": {
+      "suggested_key": { "default": "Alt+Shift+V" },
+      "description": "Open the Flow Viewer with the current recording"
+    }
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:"
   }
 }

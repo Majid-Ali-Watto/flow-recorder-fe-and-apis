@@ -11,6 +11,10 @@ A Chrome Extension (Manifest V3). No build step, no bundler, no framework. Vanil
 - `js/viewer.js` — Flow Viewer page
 - `js/utils.js` — shared utilities (filtering, rendering)
 - `styles/viewer.css` — dark theme, CSS custom properties
+- `js/history.js` (IndexedDB), `js/options.js` (settings), `js/exporters.js` + `js/diff.js` (pure, unit-tested)
+- `html/privacy.html`, `html/terms.html` — generated from `PRIVACY.md` / `TERMS.md` via `node scripts/build-legal-pages.mjs`
+- Tests: `node --test "tests/*.test.mjs"`
+- Entry types also include `CONSOLE` and `WEBSOCKET`; FE steps carry `target` (selector etc.) and `point`
 
 ## Entry types
 - `type: "API"` — has `request.url`, `page.url` (FE page), `request.postData`, `responseBody`, `response.status`
@@ -19,6 +23,7 @@ A Chrome Extension (Manifest V3). No build step, no bundler, no framework. Vanil
 
 ## Rules
 - Use DOM methods for interactive elements, not innerHTML + inline handlers
+- Treat recorded/uploaded data as untrusted: use `textContent`, `safeHttpUrl`, `safeImageSrc`; `highlightText` escapes for you
 - Search filtering respects `searchScope = { feUrl, apiUrl, payload, response }` — only search/highlight fields whose flag is true
 - CSS tokens are in `:root` in viewer.css — use `var(--accent)`, `var(--surface)`, `var(--border)` etc.
 - Do not add npm dependencies or a build step

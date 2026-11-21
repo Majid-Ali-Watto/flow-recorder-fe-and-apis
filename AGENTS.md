@@ -9,14 +9,22 @@ Chrome Extension, Manifest V3. Vanilla JavaScript (ES modules), plain HTML, plai
 ## Directory layout
 
 ```
-js/background.js   — service worker: recording, debugger events
+js/background.js   — service worker: recording, debugger events, sessions, shortcuts
+js/history.js      — IndexedDB recording history
+js/options.js      — settings page
+js/exporters.js    — pure: cURL, fetch, HAR, HTML report, Playwright, Cypress
+js/diff.js         — pure: compare two flows
 js/content.js      — injected script: click + route tracking
 js/popup.js        — popup UI
 js/recorder.js     — screen/video recording
 js/viewer.js       — Flow Viewer page logic
 js/utils.js        — shared pure utilities
-html/              — popup.html, viewer.html, recorder.html
-styles/            — popup.css, viewer.css
+html/              — popup, viewer, recorder, options, privacy, terms
+styles/            — popup.css, viewer.css, options.css, legal.css
+icons/             — icon.svg + PNGs
+tests/             — node --test "tests/*.test.mjs" (unit + headless Chrome e2e, no npm)
+scripts/           — build-legal-pages.mjs (regenerates html/privacy.html, html/terms.html)
+PRIVACY.md, TERMS.md — legal docs
 manifest.json      — MV3 manifest
 ```
 

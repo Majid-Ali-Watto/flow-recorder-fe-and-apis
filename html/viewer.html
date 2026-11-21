@@ -4,75 +4,133 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Flow Viewer</title>
+    <script src="../js/theme-init.js"></script>
+    <link rel="stylesheet" href="../styles/base.css" />
     <link rel="stylesheet" href="../styles/viewer.css" />
   </head>
   <body>
-    <!-- ── Toolbar ─────────────────────────────────────────── -->
+    <!-- ── Sticky header ───────────────────────────────────── -->
     <div class="toolbar">
-      <span class="toolbar-title">⚡ Flow Viewer</span>
+      <div class="appbar">
+        <div class="brand">
+          <img class="brand-logo" src="../icons/icon48.png" alt="" />
+          <span class="brand-name">Flow <span class="grad">Viewer</span></span>
+        </div>
 
-      <div class="search-wrap">
-        <svg
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <circle cx="11" cy="11" r="8" />
-          <path d="M21 21l-4.35-4.35" />
-        </svg>
-        <input
-          id="searchUrl"
-          type="text"
-          placeholder="Search by URL, payload, or response"
-          autocomplete="off"
-        />
+        <div class="view-tabs" role="tablist" aria-label="View">
+          <button class="view-tab active" data-view="list" role="tab" title="All entries as a timeline">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+            List
+          </button>
+          <button class="view-tab" data-view="waterfall" role="tab" title="Request timing waterfall">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h7M7 12h9M12 18h9"/></svg>
+            Waterfall
+          </button>
+          <button class="view-tab" data-view="compare" role="tab" title="Compare this flow with another recording">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4L3 8l4 4M3 8h13M17 20l4-4-4-4M21 16H8"/></svg>
+            Compare
+          </button>
+        </div>
+
+        <div class="appbar-actions">
+          <div class="history-group">
+            <select id="historySelect" title="Open a recording saved in this browser">
+              <option value="">History…</option>
+            </select>
+            <button id="refreshFlow" class="icon-btn" title="Reload the current recording / session">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.4L21 8M21 3v5h-5"/></svg>
+            </button>
+            <button id="deleteSession" class="icon-btn" title="Delete the selected history session">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>
+            </button>
+          </div>
+
+          <label class="tool-btn" for="fileInput" title="Open a previously exported flow .json file">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V9M7 14l5-5 5 5M5 3h14"/></svg>
+            Open JSON
+          </label>
+          <input id="fileInput" type="file" accept=".json,application/json" hidden />
+
+          <label class="tool-btn" for="videoInput" title="Load the matching screen recording (.webm) to jump to each step">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M16 10l6-3v10l-6-3z"/></svg>
+            Video
+          </label>
+          <input id="videoInput" type="file" accept="video/*" hidden />
+
+          <details class="menu" id="exportMenu">
+            <summary class="btn btn-primary btn-sm">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+              Export
+            </summary>
+            <div class="menu-list" role="menu">
+              <button id="downloadFiltered" role="menuitem"><strong>JSON</strong><span>Visible entries</span></button>
+              <button id="downloadHar" role="menuitem"><strong>HAR</strong><span>DevTools · Postman · Charles</span></button>
+              <button id="downloadReport" role="menuitem"><strong>HTML report</strong><span>Self-contained, shareable</span></button>
+              <hr />
+              <button id="downloadPlaywright" role="menuitem"><strong>Playwright test</strong><span>Generated from FE steps</span></button>
+              <button id="downloadCypress" role="menuitem"><strong>Cypress test</strong><span>Generated from FE steps</span></button>
+            </div>
+          </details>
+
+          <button class="icon-btn" id="themeToggle" type="button"></button>
+        </div>
       </div>
 
-      <select id="filterMethod" title="Show only entries with this HTTP method">
-        <option value="">All Methods</option>
-      </select>
+      <div class="filterbar">
+        <div class="search-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          <input id="searchUrl" type="search" placeholder="Search URLs, payloads, responses, console messages…" autocomplete="off" />
+        </div>
 
-      <select id="filterStatus" title="Show only entries with this HTTP response status code">
-        <option value="">All Statuses</option>
-      </select>
+        <select id="filterMethod" title="Show only entries with this HTTP method">
+          <option value="">All methods</option>
+        </select>
+        <select id="filterStatus" title="Show only entries with this HTTP response status code">
+          <option value="">All statuses</option>
+        </select>
 
-      <button id="clearFilters" title="Reset search text, method filter, and status filter">✕ Clear</button>
-      <span id="resultCount">0 / 0 requests</span>
+        <div class="search-scope">
+          <span class="search-scope-label">Search in</span>
+          <label class="chip" title="Frontend page URL (entry.page.url or entry.route)"><input type="checkbox" id="scopeFeUrl" checked />FE URL</label>
+          <label class="chip" title="API request URL"><input type="checkbox" id="scopeApiUrl" checked />Endpoint</label>
+          <label class="chip" title="Request body / POST data"><input type="checkbox" id="scopePayload" checked />Payload</label>
+          <label class="chip" title="Response bodies, WebSocket frames, SSE events and console messages"><input type="checkbox" id="scopeResponse" checked />Response</label>
+        </div>
 
-      <label class="upload-label" for="fileInput">📂 Upload JSON</label>
-      <input id="fileInput" type="file" accept=".json" />
+        <button id="clearFilters" class="tool-btn btn-ghost" title="Reset search text, method filter, and status filter">Clear</button>
+        <span id="resultCount" class="result-count">0 / 0 entries</span>
+      </div>
 
-      <div class="search-scope">
-        <span class="search-scope-label">Search in:</span>
-        <label class="scope-option" title="Search inside the frontend page URL (entry.page.url or entry.route)">
-          <input type="checkbox" id="scopeFeUrl" checked />
-          FE URL
-        </label>
-        <label class="scope-option" title="Search inside the API request URL (entry.request.url)">
-          <input type="checkbox" id="scopeApiUrl" checked />
-          API Endpoint
-        </label>
-        <label class="scope-option" title="Search inside the request body / POST data">
-          <input type="checkbox" id="scopePayload" checked />
-          Payload
-        </label>
-        <label class="scope-option" title="Search inside the API response body">
-          <input type="checkbox" id="scopeResponse" checked />
-          Response
-        </label>
-        <button id="downloadFiltered" class="download-filtered-btn" title="Download only the currently visible (filtered) entries as a JSON file">⬇ Download JSON</button>
+      <div class="compare-bar" id="compareBar" hidden>
+        <span class="search-scope-label">Compare current flow <b>A</b> with <b>B</b></span>
+        <select id="compareSelect" title="Pick recording B">
+          <option value="">Choose recording…</option>
+        </select>
+        <label class="tool-btn" for="compareFile">Open file as B</label>
+        <input id="compareFile" type="file" accept=".json,application/json" hidden />
+        <label class="chip" title="Ignore keys such as id, createdAt, timestamp, token when comparing response bodies"><input type="checkbox" id="ignoreVolatile" checked />Ignore IDs &amp; timestamps</label>
+        <label class="chip"><input type="checkbox" id="onlyDiffs" checked />Only differences</label>
       </div>
     </div>
 
     <!-- ── Entries ──────────────────────────────────────────── -->
-    <div id="flowContainer">
+    <main id="flowContainer">
       <div class="empty-state">
-        No flow data loaded yet.<br />Upload a JSON file or trigger capture from
-        the extension.
+        <div class="empty-icon"></div>
+        <p class="empty-title">No flow loaded yet</p>
+        <p>Open a JSON file, pick a recording from History, or record one from the extension popup.<br />Only open flow files you trust: they can contain tokens, personal data and screenshots.</p>
       </div>
+    </main>
+
+    <!-- ── Video panel ──────────────────────────────────────── -->
+    <div class="video-panel" id="videoPanel" hidden>
+      <div class="video-panel-header">
+        <span>Screen recording</span>
+        <button id="closeVideo" class="icon-btn" title="Close video">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+      <video id="videoPlayer" controls></video>
     </div>
 
     <!-- ── Footer ────────────────────────────────────────────── -->
@@ -80,9 +138,13 @@
       <span class="dev-name">Majid Ali</span>
       <span class="dev-role">Full Stack Web Developer</span>
       <div class="dev-links">
-        <a href="https://majidev.netlify.app" target="_blank">majidev.netlify.app</a>
+        <a href="https://majidev.netlify.app" target="_blank" rel="noopener noreferrer">majidev.netlify.app</a>
         <span class="dev-sep">·</span>
-        <a href="https://github.com/Majid-Ali-Watto" target="_blank">github.com/Majid-Ali-Watto</a>
+        <a href="https://github.com/Majid-Ali-Watto" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <span class="dev-sep">·</span>
+        <a href="privacy.html" target="_blank">Privacy Policy</a>
+        <span class="dev-sep">·</span>
+        <a href="terms.html" target="_blank">Terms of Use</a>
       </div>
     </footer>
 

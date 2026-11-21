@@ -1,79 +1,126 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <title>Flow Recorder</title>
+    <script src="../js/theme-init.js"></script>
+    <link rel="stylesheet" href="../styles/base.css" />
     <link rel="stylesheet" href="../styles/popup.css" />
   </head>
   <body>
-    <div class="header">
-      <span class="header-dot"></span>
-      <span class="header-title">⚡ Flow Viewer</span>
-    </div>
+    <header class="pop-header">
+      <div class="brand">
+        <img class="brand-logo" src="../icons/icon48.png" alt="" />
+        <div class="brand-stack">
+          <span class="brand-name">Flow <span class="grad">Recorder</span></span>
+          <span class="status-pill" id="statusPill">
+            <span class="status-indicator" id="statusDot"></span>
+            <span id="statusText">Idle</span>
+          </span>
+        </div>
+      </div>
+      <button class="icon-btn" id="themeToggle" type="button"></button>
+    </header>
 
-    <div class="body">
-      <!-- toggles -->
-      <div class="toggles">
-        <label class="toggle-row" title="Include HTTP request headers (e.g. Authorization, Content-Type) in each recorded entry">
-          <span>Request Headers</span>
-          <input type="checkbox" id="includeReqHeaders" checked />
-          <span class="switch"></span>
-        </label>
-        <label class="toggle-row" title="Include HTTP response headers in each recorded entry">
-          <span>Response Headers</span>
-          <input type="checkbox" id="includeResHeaders" checked />
-          <span class="switch"></span>
-        </label>
-        <label class="toggle-row" title="Take a screenshot of the visible page after each API request completes. Increases exported file size.">
-          <span>Capture API Screenshot</span>
-          <input type="checkbox" id="captureApiScreenshots" />
-          <span class="switch"></span>
-        </label>
+    <main class="pop-body">
+      <div class="section-head">
+        <span>Record</span>
+        <span id="statusCounts" class="status-counts"></span>
       </div>
 
-      <!-- status -->
-      <div class="status-bar">
-        <span class="status-indicator" id="statusDot"></span>
-        <span id="statusText">Idle</span>
+      <div class="tiles">
+        <button class="tile btn-start" id="apiToggle" title="Capture network requests, console errors, WebSockets and SSE on the active tab">
+          <span class="tile-icon tone-blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h11l-3-3M17 17H6l3 3"/></svg>
+          </span>
+          <span class="tile-title">Record API</span>
+          <span class="tile-sub">Network · console · WS</span>
+        </button>
+        <button class="tile btn-start" id="feToggle" title="Track clicks, inputs and navigation on the active tab with a screenshot per step">
+          <span class="tile-icon tone-violet">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9l11 4-5 2-2 5z"/><path d="M5 3v2M3 5h2M10 3l-1 2M3 10l2-1"/></svg>
+          </span>
+          <span class="tile-title">Record FE</span>
+          <span class="tile-sub">Clicks · steps · shots</span>
+        </button>
+        <button class="tile btn-start" id="bothToggle" title="Run API and FE recording together in one session">
+          <span class="tile-icon tone-green">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg>
+          </span>
+          <span class="tile-title">Record both</span>
+          <span class="tile-sub">One linked timeline</span>
+        </button>
+        <button class="tile" id="screenRecordToggle" title="Record a video (.webm), optionally in sync with API + FE recording">
+          <span class="tile-icon tone-red">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M16 10l6-3v10l-6-3z"/></svg>
+          </span>
+          <span class="tile-title">Screen video</span>
+          <span class="tile-sub">Synced with the flow</span>
+        </button>
       </div>
 
-      <!-- action buttons -->
-      <button class="btn btn-start" id="apiToggle" title="Capture all network requests and responses on the active tab — URL, method, headers, payload, status code, and timing">Start API Recording</button>
-      <button class="btn btn-start" id="feToggle" title="Track user interactions on the active tab — clicks, navigation, and screenshots at each step">Start FE Recording</button>
-      <button class="btn btn-start" id="bothToggle" title="Run API recording and FE interaction tracking simultaneously">
-        Start Both Recordings
-      </button>
+      <p class="popup-message" id="popupMessage" role="status" hidden></p>
 
-      <button class="btn btn-start" id="screenRecordToggle" title="Record the screen as a video file (.webm) with optional audio">
-        Start Screen Recording
-      </button>
-
-      <button class="btn btn-viewer" id="openViewer" title="Open the Flow Viewer to inspect, search, filter, and export the recorded flow">
-        <svg
-          width="12"
-          height="12"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
-        >
-          <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
-          <polyline points="15 3 21 3 21 9" />
-          <line x1="10" y1="14" x2="21" y2="3" />
-        </svg>
+      <button class="btn btn-primary btn-block btn-lg" id="openViewer" title="Inspect, search, compare and export the recording">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
         Open Flow Viewer
       </button>
-    </div>
 
-    <div class="dev-footer">
+      <div class="section-head"><span>Capture</span></div>
+      <div class="toggles">
+        <label class="toggle-row" title="Include HTTP request headers (masked when Mask secrets is on)">
+          <span>Request headers</span>
+          <input type="checkbox" class="switch" id="includeReqHeaders" />
+        </label>
+        <label class="toggle-row" title="Include HTTP response headers">
+          <span>Response headers</span>
+          <input type="checkbox" class="switch" id="includeResHeaders" />
+        </label>
+        <label class="toggle-row" title="Take a screenshot after each API request (larger files)">
+          <span>Screenshot per request</span>
+          <input type="checkbox" class="switch" id="captureApiScreenshots" />
+        </label>
+        <label class="toggle-row" title="Replace auth headers, cookies, tokens and passwords with [REDACTED]. Best effort: review exports before sharing.">
+          <span>Mask secrets <span class="tag">recommended</span></span>
+          <input type="checkbox" class="switch" id="maskSecrets" checked />
+        </label>
+      </div>
+
+      <div class="pop-actions">
+        <button class="tool-btn" id="exportData" title="Download the current / last recording as JSON">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+          Export
+        </button>
+        <button class="tool-btn" id="openSettings" title="Domain filter, custom masking, console/WebSocket capture, history and shortcuts">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+          Settings
+        </button>
+        <button class="tool-btn danger" id="clearData" title="Delete the current recording and all saved history from this device">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>
+          Clear
+        </button>
+      </div>
+
+      <p class="hint" id="shortcutHint"></p>
+      <p class="hint privacy-note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Recordings stay on this device. Nothing is uploaded.
+      </p>
+    </main>
+
+    <footer class="dev-footer">
       <span class="dev-name">Majid Ali</span>
-      <span class="dev-sep">·</span>
       <span class="dev-role">Full Stack Web Developer</span>
       <div class="dev-links">
-        <a href="https://majidev.netlify.app" target="_blank">majidev.netlify.app</a>
+        <a href="https://majidev.netlify.app" target="_blank" rel="noopener noreferrer">Website</a>
         <span class="dev-sep">·</span>
-        <a href="https://github.com/Majid-Ali-Watto" target="_blank">GitHub</a>
+        <a href="https://github.com/Majid-Ali-Watto" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <span class="dev-sep">·</span>
+        <a href="privacy.html" target="_blank">Privacy</a>
+        <span class="dev-sep">·</span>
+        <a href="terms.html" target="_blank">Terms</a>
       </div>
-    </div>
+    </footer>
 
     <script type="module" src="../js/popup.js"></script>
   </body>
